@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Kue</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #FFA500;
+            color: #000000;
+        }
+
+        .navbar {
+            background-color: #000000 !important;
+        }
+
+        .navbar .navbar-brand,
+        .navbar .nav-link {
+            color: #FFA500 !important;
+        }
+
+        h1 {
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .table-primary {
+            background-color: #000000 !important;
+            color: #FFA500;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border-color: #000000 !important;
+        }
+
+        .btn-primary {
+            background-color: #000000 !important;
+            border-color: #000000 !important;
+            color: #FFA500 !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #FFA500 !important;
+            border-color: #FFA500 !important;
+            color: #000000 !important;
+        }
+
+        .btn-warning {
+            background-color: #FFDD57 !important;
+            color: #000000 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Kasir Kue Keyza</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home and Kasir Navigation -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/kasir">Kasir</a>
+                    </li>
+    
+                    <!-- User Authentication Links -->
+                    <li class="nav-item">
+                        <span class="nav-link" id="user-info">
+                            <% if (user) { %>
+                            Welcome, <%= user.username %>
+                            <% } else { %>
+                            Welcome, Guest
+                            <% } %>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <% if (user) { %>
+                        <a class="btn btn-danger btn-sm ms-3" href="/logout">Logout</a>
+                        <% } else { %>
+                        <a class="btn btn-primary btn-sm ms-3" href="/login">Login</a>
+                        <% } %>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>    
+
+    <div class="container mt-5">
+        <h1 class="text-center">Menu Kue</h1>
+        <div class="d-flex justify-content-end mb-3">
+            <a href="/tambah" class="btn btn-primary">Tambah Menu Baru</a>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th>No.</th>
+                    <th>Nama Item</th>
+                    <th>Harga Item</th>
+                    <th colspan="2" class="text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let nomor = 0; %>
+                <% barang.forEach(items => { %>
+                <% nomor += 1; %>
+                <tr>
+                    <td><%= nomor %></td>
+                    <td><%= items.name %></td>
+                    <td><%= items.price %></td>
+                    <td class='text-center'>
+                        <a href='/edit/<%= items.id %>' class='btn btn-warning btn-sm'>Edit</a>
+                    </td>
+                    <td class='text-center'>
+                        <button onclick=<%='deleteItem('+items.id+')' %> class='btn btn-danger btn-sm'>Hapus</button>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function deleteItem(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus item ini?")) {
+                let result = await fetch(`/api/items/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (result.ok) {
+                    alert("Item berhasil dhapus");
+                    location.reload();
+                } else {
+                    alert("Gagal menghapus item");
+                }
+            }
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
